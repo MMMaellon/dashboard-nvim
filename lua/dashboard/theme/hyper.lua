@@ -4,11 +4,11 @@ local ns = api.nvim_create_namespace('dashboard')
 
 local function gen_shortcut(config)
   local shortcut = config.shortcut
-    or {
-      { desc = '[  Github]', group = 'DashboardShortCut' },
-      { desc = '[  glepnir]', group = 'DashboardShortCut' },
-      { desc = '[  0.2.3]', group = 'DashboardShortCut' },
-    }
+      or {
+        { desc = '[  Github]', group = 'DashboardShortCut' },
+        { desc = '[  glepnir]', group = 'DashboardShortCut' },
+        { desc = '[  0.2.3]', group = 'DashboardShortCut' },
+      }
 
   if vim.tbl_isempty(shortcut) then
     shortcut = {}
@@ -84,10 +84,10 @@ local function load_packages(config)
       '',
       'Startuptime: ' .. package_manager_stats.time .. ' ms',
       'Plugins: '
-        .. package_manager_stats.loaded
-        .. ' loaded / '
-        .. package_manager_stats.count
-        .. ' installed',
+      .. package_manager_stats.loaded
+      .. ' loaded / '
+      .. package_manager_stats.count
+      .. ' installed',
     }
   else
     lines = {
@@ -122,9 +122,10 @@ local function project_list(config, callback)
 
   local function read_project(data)
     local res = {}
-    data = string.gsub(data, '%z', '')
-    local dump = assert(loadstring(data))
-    local list = dump()
+    -- data = string.gsub(data, '%z', '')
+    -- local dump = assert(loadstring(data))
+    -- local list = dump()
+    local list = require('project_nvim').get_recent_projects()
     if list then
       list = vim.list_slice(list, #list - config.project.limit)
     end
@@ -482,8 +483,8 @@ local function theme_instance(config)
     map_key(config, config.confirm_key or '<CR>')
     require('dashboard.events').register_lsp_root(config.path)
     local size = math.floor(vim.o.lines / 2)
-      - math.ceil(api.nvim_buf_line_count(config.bufnr) / 2)
-      - 2
+        - math.ceil(api.nvim_buf_line_count(config.bufnr) / 2)
+        - 2
     local fill = utils.generate_empty_table(size)
     api.nvim_buf_set_lines(config.bufnr, 0, 0, false, fill)
     vim.bo[config.bufnr].modifiable = false
